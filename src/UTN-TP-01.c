@@ -24,30 +24,29 @@ int main(void) {
 	setbuf(stdout, NULL);
 
 	while(opcionNum != 10){
-	validarInt(" 1. Ingresar Kilómetros\n 2. Ingresar Precio de Vuelos\n 3. Calcular todos los costos\n 4. Informar Resultados\n 5. Carga forzada de datos\n10. Salir\n", &opcionNum, 0, 11);
-	switch(opcionNum){
+		validarInt(" 1. Ingresar Kilómetros\n 2. Ingresar Precio de Vuelos\n 3. Calcular todos los costos\n 4. Informar Resultados\n 5. Carga forzada de datos\n10. Salir\n", &opcionNum, 0, 11);
+		switch(opcionNum){
 			case 1:
 				ingresarKilometro(&km, 0, 20000);
-			break;
+				break;
 
 			case 2:
 				ingresarPrecios(&precioAerolineas, &precioLatam, 0, 500000);
-			break;
+				break;
 
 			case 3:
 				calcularCostos(&costosCalculados, &km, &precioAerolineas, &precioLatam, &precioLatamDeb, &precioLatamCred, &precioLatamBTC, &precioLatamPorKm, &precioAerolineasDeb, &precioAerolineasCred, &precioAerolineasBTC, &precioAerolineasPorKm, &diferenciaPrecio);
-			break;
+				break;
 
 			case 4:
-				informarResultado(&costosCalculados, &km, &precioLatam, & precioLatamDeb, & precioLatamCred, & precioLatamBTC, & precioLatamPorKm, &precioAerolineas, & precioAerolineasDeb, & precioAerolineasCred, & precioAerolineasBTC, & precioAerolineasPorKm, &diferenciaPrecio);
-			break;
+				informarResultado(&costosCalculados, &km, &precioLatam, & precioLatamDeb, & precioLatamCred, & precioLatamBTC, &precioLatamPorKm, &precioAerolineas, & precioAerolineasDeb, & precioAerolineasCred, & precioAerolineasBTC, & precioAerolineasPorKm, &diferenciaPrecio);
+				break;
 
 			case 5:
 				cargarDatosForzados(&km, &precioAerolineas, &precioLatam, &precioLatamDeb, &precioLatamCred, &precioLatamBTC, &precioLatamPorKm, &precioAerolineasDeb, &precioAerolineasCred, &precioAerolineasBTC, &precioAerolineasPorKm, &diferenciaPrecio, &costosCalculados);
-			break;
+				break;
 		}
 	}
-
 	finalizarPrograma("El programa ha finalizado.\n\n");
 	return 0;
 }
