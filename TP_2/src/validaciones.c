@@ -101,6 +101,7 @@ int findKindFloat(char str[], int len){
 }
 
 int getString(char str[], int maxLen){
+		maxLen +=2;
 		int len;
 		fgets(str, maxLen, stdin);
 		fflush(stdin);

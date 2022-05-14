@@ -17,14 +17,19 @@ int main(void){
 	setbuf(stdout, 0);
 	int opcion;
 	Passenger passList[CANT];
+	FlightCode codeList[50];
+
 	initPassenger(passList);
+	initFlightCode(codeList);
+
+	cargarFlightCode(codeList);
 
 	do{
 		opcion = menuInt("1. Altas\n2. Modificar\n3. Baja\n4. Informar\n", 1, 4);
 
 		switch(opcion){
 			case 1:
-				darDeAlta(passList);
+				darDeAlta(passList, codeList);
 			break;
 			case 2:
 				modificar(passList);
@@ -33,7 +38,7 @@ int main(void){
 				darDeBaja(passList);
 			break;
 			case 4:
-				informar(passList);
+				informar(passList, codeList);
 			break;
 			default:{
 				VERIFY_MSG
