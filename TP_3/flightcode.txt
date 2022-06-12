@@ -1,0 +1,2 @@
+id,flycode,statusFlight
+{{1,"BA2491A", "Aterrizado"}, {2,"IB0800A", "Aterrizado"}, {3,"MM0987B", "En Horario"}, {4, "TU6789B", "Aterrizado"}, {5,"GU2345F", "En Vuelo"}, {6,"HY4567D", "Demorado"}, {7,"FR5678G", "En Horario"}, {8,"BR3456J", "Demorado"}};

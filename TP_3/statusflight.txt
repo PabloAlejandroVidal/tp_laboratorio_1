@@ -1,0 +1,5 @@
+id,statusFlight
+1,Aterrizado
+2,En Horario
+3,En Vuelo
+4,Demorado
