@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "LinkedList.h"
 #include "Passenger.h"
 #include "validate.h"
 
@@ -128,5 +127,18 @@ int menu(char* msg){
 	if(isNumeric(respuesta)){
 		ret = atoi(respuesta);
 	}
+	return ret;
+}
+
+int numcmp(float num1, float num2){
+	int ret;
+	ret = 0;
+	if(num1 > num2){
+			ret = 1;
+		}else{
+			if(num1 < num2){
+				ret = -1;
+			}
+		}
 	return ret;
 }

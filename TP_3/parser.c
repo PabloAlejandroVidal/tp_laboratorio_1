@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "LinkedList.h"
 #include "Passenger.h"
 #include "parser.h"
 #include "validate.h"
@@ -18,8 +17,6 @@ int parser_PassengerFromText(FILE* pFile , LinkedList* pArrayListPassenger){
 	Passenger* new;
 	int i;
 	int iDatos;
-	int newid;
-	int lastid;
 	int added;
 	int error;
 	added = 0;
@@ -36,8 +33,6 @@ int parser_PassengerFromText(FILE* pFile , LinkedList* pArrayListPassenger){
 				new = Passenger_newParam(pArrayListPassenger, id, nombre, apellido, precio, flyCode, typePassenger, statusFlight);
 				if(new != NULL){
 					ll_add(pArrayListPassenger, new);
-					newid = atoi(id);
-						Passenger_writeId(&newid, "id.csv");
 						added ++;
 				}else{
 					error ++;
@@ -61,39 +56,24 @@ int parser_PassengerFromText(FILE* pFile , LinkedList* pArrayListPassenger){
  *
  */
 int parser_PassengerFromBinary(FILE* pFile , LinkedList* pArrayListPassenger){
-	Passenger *new, *pFind;
-	int id;
-	int error;
+	Passenger *new;
 	int added;
-	int lastid;
-	int newid;
-	error = 0;
 	added = 0;
 	if(pFile != NULL){
-		while(!feof(pFile)){
+		do{
 			new = Passenger_new();
-			fread(&new, sizeof(new), 1, pFile);
-			Passenger_getId(new, &id);
-			pFind = Passenger_search(pArrayListPassenger, id);
-			if(pFind == NULL ){
+			fread(new, sizeof(Passenger), 1, pFile);
+			if(!feof(pFile)){
 				ll_add(pArrayListPassenger, new);
-				Passenger_getId(new, &newid);
-				Passenger_readId(&lastid, "id.csv");
-				if(newid > lastid){
-					Passenger_writeId(&newid, "id.csv");
-				}
-				added++;
+				added ++;
 			}else{
-				error++;
+				printf("Se ha completado la carga con %d registros correctamente\n", added);
+				free(new);
 			}
-		}
-		printf("Se ha completado la carga con %d registros ingresados correctamente, %d errores\n", added, error);
+		}while(!feof(pFile));
 	}else{
 		printf("Error al abrir el archivo\n");
 	}
 	fclose(pFile);
     return 1;
 }
-
-
-

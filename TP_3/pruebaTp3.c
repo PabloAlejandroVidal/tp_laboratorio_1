@@ -25,16 +25,16 @@ int main(){
     int option;
     int optionb;
     LinkedList* listaPasajeros;
-    int openMode;
-    int idaux;
+    int lastid;
+    int opened;
     int edited;
     option = 0;
     optionb = 0;
-    openMode = 0;
-    idaux = 0;
+    lastid = 0;
+    opened = 0;
     edited = 0;
     listaPasajeros = ll_newLinkedList();
-
+    lastid = Passenger_readId();
     do{
     	option = menu(
     			"    ________________________________________________ \n"
@@ -55,23 +55,23 @@ int main(){
 			case 0:
 				break;
 			case 1:
-            	if(openMode == 0){
+            	if(opened == 0){
 					controller_loadFromText("data.csv", listaPasajeros);
-					openMode = 1;
+					opened = 1;
             	}else{
             		printf("Ya se ha cargado un archivo anteriormente\n");
             	}
                 break;
             case 2:
-            	if(openMode == 0){
+            	if(opened == 0){
 					controller_loadFromBinary("data.bin", listaPasajeros);
-					openMode = 2;
+					opened = 1;
             	}else{
             		printf("Ya se ha cargado un archivo anteriormente\n");
             	}
             	break;
             case 3:
-            	controller_addPassenger(listaPasajeros, &idaux);
+            	controller_addPassenger(listaPasajeros, &lastid);
             	edited = 1;
             	break;
             case 4:
@@ -89,23 +89,15 @@ int main(){
             	controller_sortPassenger(listaPasajeros);
             	break;
             case 8:
-            	if(openMode == 1){
-            		controller_saveAsText("data.csv", listaPasajeros);
-            	}else{
-            		printf("Para guardar como texto, debe ser abierto en modo texto\n");
-            	}
-            	break;
             case 9:
-            	if(edited == 0){
-            		controller_saveAsBinary("data.bin", listaPasajeros);
-            	}else{
-            		printf("No puedes guardar los datos abiertos como binario una vez modificados\n");
-            	}
+            	controller_saveAsText("data.csv", listaPasajeros);
+            	controller_saveAsBinary("data.bin", listaPasajeros);
+            	edited = 0;
             	break;
             case 10:
-				while(optionb != 2){
+				if(edited == 1){
+					do{
 
-					if(edited == 1){
 						printf("Estas a punto de salir sin haber guardado los cambios\n");
 						optionb = menu(
 								"    ________________________________________________ \n"
@@ -116,16 +108,10 @@ int main(){
 
 						switch(optionb){
 						case 1:
-							if(openMode == 1){
 								controller_saveAsText("data.csv", listaPasajeros);
-							}else{
-								if(openMode == 2){
-									controller_saveAsBinary("data.bin", listaPasajeros);
-								}
+								controller_saveAsBinary("data.bin", listaPasajeros);
 								edited = 0;
 								optionb = 2;
-								option = 10;
-							}
 							break;
 						case 2:
 							option = 0;
@@ -135,8 +121,7 @@ int main(){
 							optionb = 2;
 							break;
 						}
-					}
-				optionb = 2;
+					}while(optionb != 2);
 				}
 				break;
             default:

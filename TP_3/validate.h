@@ -20,4 +20,6 @@ int ingresar(char* msg, char* str, int max);
 
 int menu(char* msg);
 
+int numcmp(float num1, float num2);
+
 #endif /* VALIDATE_H_ */

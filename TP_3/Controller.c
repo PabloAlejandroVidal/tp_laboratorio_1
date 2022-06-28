@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "LinkedList.h"
+
 #include "Passenger.h"
 #include "parser.h"
 #include "validate.h"
@@ -29,7 +29,7 @@ int controller_loadFromText(char* path , LinkedList* pArrayListPassenger){
  *
  */
 int controller_loadFromBinary(char* path , LinkedList* pArrayListPassenger){
-	FILE* pFile = fopen(path, "r");
+	FILE* pFile = fopen(path, "rb");
 	parser_PassengerFromBinary(pFile, pArrayListPassenger);
 
     return 1;
@@ -42,12 +42,11 @@ int controller_loadFromBinary(char* path , LinkedList* pArrayListPassenger){
  * \return int
  *
  */
-int controller_addPassenger(LinkedList* pArrayListPassenger, int* idaux){
+int controller_addPassenger(LinkedList* pArrayListPassenger, int* lastId){
 	char id[10], nombre[50], apellido[50], precio[12], flyCode[20], typePassenger[20], statusFlight[20];
 	Passenger *new;
 	int validate;
 	int ret;
-	int lastid;
 	ret = -1;
 
 	new = Passenger_new();
@@ -81,24 +80,17 @@ int controller_addPassenger(LinkedList* pArrayListPassenger, int* idaux){
 		int vuelo = codigoVueloToEstadoVuelo(flyCode);
 		estadoVueloToString(statusFlight, vuelo);
 
-		if(*idaux == 0){
-			Passenger_readId(&lastid, "id.csv");
-			*idaux = lastid+1;
-			sprintf(id, "%d  .",*idaux);
-		}else{
-			sprintf(id, "%d",*idaux);
-		}
-		(*idaux)++;
+		sprintf(id, "%d",(*lastId));
 		new = Passenger_newParam(pArrayListPassenger, id, nombre, apellido, precio, flyCode, typePassenger, statusFlight);
 		if(new != NULL){
 			ll_add(pArrayListPassenger, new);
+			(*lastId)++;
 			printf("El registro se ha cargado con exito en LinkedList\n");
 			ret = 0;
+		}else{
+			printf("Error al cargar un nuevo registro en LinkedList\n");
 		}
 
-//		if(new == NULL){
-//			printf("Error al cargar un nuevo registro en LinkedList\n");
-//		}
 	}else{
 		ret = -2;
 	}
@@ -181,7 +173,7 @@ int controller_editPassenger(LinkedList* pArrayListPassenger){
  *
  */
 int controller_removePassenger(LinkedList* pArrayListPassenger){
-	int len, id;
+	int len, id, index;
 	char str[10];
 	Passenger* new;
 	len = ll_len(pArrayListPassenger);
@@ -192,12 +184,12 @@ int controller_removePassenger(LinkedList* pArrayListPassenger){
 			id = atoi(str);
 			new = Passenger_search(pArrayListPassenger, id);
 			if(new != NULL){
-				ll_remove(pArrayListPassenger, id);
+				index = ll_indexOf(pArrayListPassenger, new);
+				ll_remove(pArrayListPassenger, index);
 				printf("El pasajero se ha dado de baja correctamente\n");
 			}else{
 				printf("El id ingresado no se encuentra en los registros\n");
 			}
-			ll_remove(pArrayListPassenger, 0);
 		}else{
 			printf("Un error ha ocurrido\n");
 		}
@@ -256,11 +248,45 @@ int controller_ListPassenger(LinkedList* pArrayListPassenger){
 
 int controller_sortPassenger(LinkedList* pArrayListPassenger){
 	int len;
+	int option;
 	len = ll_len(pArrayListPassenger);
+	int (*pFuncion)(void*, void*);
 	if(len > 0){
-		int (*pFuncion)(void*, void*);
-		pFuncion = Passenger_criterioNombre;
-		//pFuncion = Passenger_criterioPrecio;
+		option = menu(
+				"    ________________________________________________ \n"
+				"   |_________________Ordenar Lista__________________|\n"
+				" 1 | Id                                             |\n"
+				" 2 | Nombre                                         |\n"
+				" 3 | Apellido                                       |\n"
+				" 4 | Precio de vuelo                                |\n"
+				" 5 | Tipo de pasajero                               |\n"
+				" 6 | Codigo de vuelo                                |\n"
+				" 7 | Estado de vuelo                                |\n"
+				"   |________________________________________________|\n"
+		);
+		switch(option){
+		case 1:
+			pFuncion = Passenger_compararId;
+			break;
+		case 2:
+			pFuncion = Passenger_compararNombre;
+			break;
+		case 3:
+			pFuncion = Passenger_compararApellido;
+			break;
+		case 4:
+			pFuncion = Passenger_compararPrecio;
+			break;
+		case 5:
+			pFuncion = Passenger_compararTipoPasajero;
+			break;
+		case 6:
+			pFuncion = Passenger_compararCodigoVuelo;
+			break;
+		case 7:
+			pFuncion = Passenger_compararEstadoVuelo;
+			break;
+		}
 		ll_sort(pArrayListPassenger, pFuncion, 1);
 	}else{
 		printf("No hay registros para ordenar\n");
@@ -299,6 +325,7 @@ int controller_saveAsText(char* path , LinkedList* pArrayListPassenger){
 			Passenger_getEstadoVuelo(new, statusFlight);
 
 			fprintf(pFile, "%s,%s,%s,%.2f,%s,%s,%s\n", id, nombre, apellido, precioF, flyCode, typePassenger, statusFlight);
+			Passenger_writeId(atoi(id));
 		}
 	}else{
 		printf("no se pudo guardar el archivo\n");
@@ -317,6 +344,22 @@ int controller_saveAsText(char* path , LinkedList* pArrayListPassenger){
  */
 int controller_saveAsBinary(char* path , LinkedList* pArrayListPassenger)
 {
+	Passenger* new;
+	FILE* pFile;
+
+	pFile = fopen("data.bin", "wb");
+	if(pFile != NULL){
+		int len, i;
+		len = ll_len(pArrayListPassenger);
+		for(i=0; i<len; i++){
+			new = ll_get(pArrayListPassenger, i);
+			fwrite(new, sizeof(Passenger), 1, pFile);
+		}
+	}else{
+		printf("no se pudo guardar el archivo\n");
+	}
+	fclose(pFile);
+
     return 1;
 }
 

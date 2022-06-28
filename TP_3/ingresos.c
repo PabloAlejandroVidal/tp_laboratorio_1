@@ -7,9 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "LinkedList.h"
 #include "Passenger.h"
-#include "parser.h"
 #include "validate.h"
 #include "ingresos.h"
 

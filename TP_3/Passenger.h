@@ -8,6 +8,8 @@
 #ifndef PASSENGER_H_
 #define PASSENGER_H_
 
+#include "LinkedList.h"
+
 typedef struct
 {
 	int id;
@@ -40,8 +42,13 @@ typedef struct
 
 
 
-int Passenger_criterioPrecio(void* a,void* b);
-int Passenger_criterioNombre(void* a,void* b);
+int Passenger_compararId(void* a,void* b);
+int Passenger_compararPrecio(void* a,void* b);
+int Passenger_compararNombre(void* a,void* b);
+int Passenger_compararApellido(void* a,void* b);
+int Passenger_compararTipoPasajero(void* a,void* b);
+int Passenger_compararCodigoVuelo(void* a,void* b);
+int Passenger_compararEstadoVuelo(void* a,void* b);
 
 Passenger* Passenger_new();
 Passenger* Passenger_newParam(LinkedList* pArrayListPassenger, char* id, char* nombre, char* apellido, char* precio,
@@ -75,8 +82,8 @@ int Passenger_getEstadoVuelo(Passenger* this,char* estadoVuelo);
 
 Passenger* Passenger_search(LinkedList* pListPassenger, int id);
 
-int Passenger_readId(int* id, char* path);
-int Passenger_writeId(int* newid, char* path);
+int Passenger_readId();
+int Passenger_writeId(int newid);
 
 int Passenger_validateNombre(char* nombre);
 int Passenger_validateId(LinkedList* pListPassenger,char* id);

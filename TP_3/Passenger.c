@@ -8,51 +8,96 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "LinkedList.h"
 #include "Passenger.h"
 #include "validate.h"
 #include "math.h"
 
 
-int Passenger_criterioPrecio(void* a,void* b){
+int Passenger_compararId(void* a,void* b){
 	int ret;
-	Passenger* p1;
-	Passenger* p2;
+	int id1;
+	int id2;
+
+	Passenger_getId((Passenger*)a, &id1);
+	Passenger_getId((Passenger*)b, &id2);
+
+	ret = numcmp(id1, id2);
+	return ret;
+}
+int Passenger_compararPrecio(void* a,void* b){
+	int ret;
 	float precio1;
 	float precio2;
 
-	p1 = (Passenger*)a;
-	p2 = (Passenger*)b;
+	Passenger_getPrecio((Passenger*)a, &precio1);
+	Passenger_getPrecio((Passenger*)b, &precio2);
 
-	Passenger_getPrecio(p1, &precio1);
-	Passenger_getNombre(p2, &precio2);
-
-	if(precio1 > precio2){
-		ret = 1;
-	}else{
-		if(precio1 < precio2){
-			ret = -1;
-		}
-	}
+	ret = numcmp(precio1, precio2);
 	return ret;
 }
 
-int Passenger_criterioNombre(void* a,void* b){
+
+int Passenger_compararNombre(void* a,void* b){
 	int ret;
-	Passenger* p1;
-	Passenger* p2;
 	char nombre1[20];
 	char nombre2[20];
 
-	p1 = (Passenger*)a;
-	p2 = (Passenger*)b;
+	Passenger_getNombre((Passenger*)a, nombre1);
+	Passenger_getNombre((Passenger*)b, nombre2);
+	ret = strcmp(nombre1, nombre2);
 
-	Passenger_getNombre(p1, nombre1);
-	Passenger_getNombre(p2, nombre2);
-
-	ret = strcmp(nombre1,nombre2);
 	return ret;
 }
+
+int Passenger_compararApellido(void* a,void* b){
+	int ret;
+	char apellido1[20];
+	char apellido2[20];
+
+	Passenger_getApellido((Passenger*)a, apellido1);
+	Passenger_getApellido((Passenger*)b, apellido2);
+	ret = stricmp(apellido1, apellido2);
+
+	return ret;
+}
+
+int Passenger_compararTipoPasajero(void* a,void* b){
+	int ret;
+	char tipoPasajero1[21];
+	char tipoPasajero2[21];
+
+	Passenger_getTipoPasajero((Passenger*)a, tipoPasajero1);
+	Passenger_getTipoPasajero((Passenger*)b, tipoPasajero2);
+
+	ret = strcmp(tipoPasajero1, tipoPasajero2);
+	return ret;
+}
+
+int Passenger_compararCodigoVuelo(void* a,void* b){
+	int ret;
+	char codigoVuelo1[21];
+	char codigoVuelo2[21];
+
+	Passenger_getCodigoVuelo((Passenger*)a, codigoVuelo1);
+	Passenger_getCodigoVuelo((Passenger*)b, codigoVuelo2);
+
+	ret = strcmp(codigoVuelo1, codigoVuelo2);
+	return ret;
+}
+
+int Passenger_compararEstadoVuelo(void* a,void* b){
+	int ret;
+	char estadoVuelo1[21];
+	char estadoVuelo2[21];
+
+	Passenger_getEstadoVuelo((Passenger*)a, estadoVuelo1);
+	Passenger_getEstadoVuelo((Passenger*)b, estadoVuelo2);
+
+	ret = strcmp(estadoVuelo1, estadoVuelo2);
+	return ret;
+}
+
+
 
 Passenger* Passenger_new(){
 	Passenger* new;
@@ -60,18 +105,20 @@ Passenger* Passenger_new(){
 	return new;
 }
 
-int Passenger_readId(int* id, char* path){
+int Passenger_readId(){
 	FILE* pFile;
-	pFile = fopen(path, "r");
-	fread(id, sizeof(int), 1, pFile);
+	int id;
+	pFile = fopen("id.bin", "r");
+	fread(&id, sizeof(int), 1, pFile);
+	id++;
 	fclose(pFile);
-	return 0;
+	return id;
 }
 
-int Passenger_writeId(int* newid, char* path){
+int Passenger_writeId(int newid){
 	FILE* pFile;
-	pFile = fopen(path, "w");
-	fwrite(newid, sizeof(int), 1, pFile);
+	pFile = fopen("id.bin", "w");
+	fwrite(&newid, sizeof(int), 1, pFile);
 	fclose(pFile);
 	return 0;
 }
